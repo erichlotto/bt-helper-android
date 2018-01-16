@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">BTHelper</string>
+    <string name="label_scanning">Scanning…</string>
+    <string name="title_select_bluetooth_device">Select a bluetooth device</string>
+    <string name="wait">Please wait…</string>
+    <string name="label_nameless_device">Device without name</string>
+</resources>
