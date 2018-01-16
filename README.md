@@ -1,5 +1,4 @@
-[![Release](https://jitpack.io/v/erichlotto/bt-helper-android.svg)]
-(https://jitpack.io/#erichlotto/bt-helper-android)
+[![Release](https://jitpack.io/v/erichlotto/bt-helper-android.svg)](https://jitpack.io/#erichlotto/bt-helper-android)
 
 Essa é uma biblioteca para facilitar a comunicação com dispositivos Bluetooth (testada apenas em arduinos).
 O dispositivo remoto age como host, é necessário que o Socket seja criado por ele.
