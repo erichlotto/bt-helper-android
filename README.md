@@ -1,4 +1,4 @@
-[![Release](https://jitpack.io/v/User/Repo.svg)]
+[![Release](https://jitpack.io/v/erichlotto/bt-helper-android.svg)]
 (https://jitpack.io/#erichlotto/bt-helper-android)
 
 Essa é uma biblioteca para facilitar a comunicação com dispositivos Bluetooth (testada apenas em arduinos).
