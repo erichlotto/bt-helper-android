@@ -21,10 +21,20 @@ public class SendCommandThread extends AbstractCommandThread {
 
     public void run() {
         while(!isInterrupted()){
-            sendCommand(0, 5);
+            byte[] buffer = new byte[7];  // buffer store for the stream
+
+            buffer[0] = (byte)'*';
+            buffer[1] = (byte)(0xff00>>8);
+            buffer[2] = (byte)0x00ff;
+            buffer[3] = (byte)(0xff00>>8);
+            buffer[4] = (byte)0x00ff;
+            buffer[5] = (byte)0;
+            buffer[6] = (byte)0;
+
             try {
+                mmOutStream.write(buffer);
                 sleep(20);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }

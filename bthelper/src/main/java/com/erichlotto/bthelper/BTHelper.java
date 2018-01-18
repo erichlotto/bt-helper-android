@@ -23,9 +23,9 @@ import java.util.List;
 
 public class BTHelper {
 
-    private final Activity activity;
-    private final ScanHelper scanHelper;
-    private final PairHelper pairHelper;
+    private Activity activity;
+    private ScanHelper scanHelper;
+    private PairHelper pairHelper;
     private List<ConnectionThread> connectionThreads = new ArrayList<>();
     private AlertDialog dialog;
 
@@ -75,7 +75,18 @@ public class BTHelper {
                 }
             });
         } else {
-            ConnectionThread ct = new ConnectionThread(device, callback);
+            ConnectionThread ct = new ConnectionThread(device, new ConnectionThread.OnConnectionListener() {
+                @Override
+                public void onConnected(BluetoothDevice device, BluetoothSocket socket) {
+                    callback.onConnected(device, socket);
+                    LastDeviceHelper.storeLastAddress(activity, device.getAddress());
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    callback.onError(e);
+                }
+            });
             connectionThreads.add(ct);
             ct.start();
         }
@@ -137,24 +148,14 @@ public class BTHelper {
                         connectDevice(device, new ConnectionThread.OnConnectionListener() {
                             @Override
                             public void onConnected(final BluetoothDevice device, final BluetoothSocket socket) {
-                                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        progress.dismiss();
-                                        onConnectionListener.onConnected(device, socket);
-                                    }
-                                });
+                                progress.dismiss();
+                                onConnectionListener.onConnected(device, socket);
                             }
 
                             @Override
                             public void onError(final Exception e) {
-                                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        progress.dismiss();
-                                        onConnectionListener.onError(e);
-                                    }
-                                });
+                                progress.dismiss();
+                                onConnectionListener.onError(e);
                             }
                         });
                     }
@@ -171,6 +172,20 @@ public class BTHelper {
 
 
     /*
+    * Try to create a connection with the last device
+    */
+    public void connectToLastDevice(ConnectionThread.OnConnectionListener callback){
+        for(BluetoothDevice d : PairHelper.getPairedDevices()){
+            if(LastDeviceHelper.getLastAddress(activity)!=null && d.getAddress().equals(LastDeviceHelper.getLastAddress(activity))){
+                connectDevice(d, callback);
+                return;
+            }
+        }
+        callback.onError(new Exception("Last device unavailable"));
+    }
+
+
+    /*
     * ALWAYS call onDestroy() when finished using BTHelper
     */
     public void onDestroy() {
@@ -179,6 +194,11 @@ public class BTHelper {
         for(ConnectionThread ct : connectionThreads)
             ct.cancel();
         scanHelper.onDestroy();
+
+        activity = null;
+        scanHelper = null;
+        pairHelper = null;
+        dialog = null;
     }
 
 

@@ -3,6 +3,8 @@ package com.erichlotto.bthelper;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -44,12 +46,22 @@ public class ConnectionThread extends Thread {
             System.out.println("CONNECTING...");
             mmSocket.connect();
             System.out.println("SUCCESS!");
-            callback.onConnected(btDevice, mmSocket);
-        } catch (IOException connectException) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onConnected(btDevice, mmSocket);
+                }
+            });
+        } catch (final IOException connectException) {
             System.out.println(connectException);
             // Unable to connect; close the socket and get out
             cancel();
-            callback.onError(connectException);
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onError(connectException);
+                }
+            });
             return;
         }
     }

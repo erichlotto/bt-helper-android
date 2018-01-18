@@ -40,6 +40,20 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
+
+        btHelper.connectToLastDevice(new ConnectionThread.OnConnectionListener() {
+            @Override
+            public void onConnected(BluetoothDevice device, BluetoothSocket socket) {
+                Toast.makeText(MainActivity.this, "Conectou em " + device.getName(), Toast.LENGTH_SHORT).show();
+                command = new SendCommandThread(socket);
+                command.start();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(MainActivity.this, "Erro: " + e.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
