@@ -17,7 +17,7 @@ allprojects {
 Adicionar a dependência ao módulo do app:
 ```gradle
 dependencies {
-  compile 'com.github.erichlotto:bt-helper-android:v1.0'
+  compile 'com.github.erichlotto:bt-helper-android:v1.0.1'
 }
 ```
 
